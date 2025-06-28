@@ -1,0 +1,32 @@
+{
+  "name": "jekyll-tailwind-alpine-starter",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:css\" \"npm run dev:js\" \"bundle exec jekyll serve\"",
+    "dev:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --watch",
+    "dev:js": "rollup -c rollup.config.mjs --watch",
+    "build": "run-s build:css build:js build:jekyll",
+    "build:css": "tailwindcss -i ./assets/css/input.css -o ./_site/assets/css/main.css --minify",
+    "build:js": "rollup -c rollup.config.mjs",
+    "build:jekyll": "bundle exec jekyll build",
+    "clean": "rm -rf _site assets/css/main.css assets/js/bundle.js",
+    "start": "npm run dev",
+    "predeploy": "npm run build",
+    "test:yaml": "yamllint _data/navigation.yml"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-import": "^15.1.0",
+    "rollup": "^4.9.6",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.2",
+    "alpinejs": "^3.13.5",
+    "concurrently": "^8.2.2",
+    "npm-run-all": "^4.1.5"
+  }
+}

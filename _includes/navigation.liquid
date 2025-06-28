@@ -1,0 +1,24 @@
+<!-- Desktop Menu -->
+<div class="hidden md:flex space-x-6">
+  {% for item in site.data.navigation.header %}
+    <a 
+      href="{{ item.url }}" 
+      class="hover:underline {% if item.highlight %}bg-blue-600 px-3 py-1 rounded-lg{% endif %}"
+    >
+      {% if item.icon %}{{ item.icon }}{% endif %}
+      {{ item.name }}
+    </a>
+  {% endfor %}
+</div>
+
+<!-- Mobile Menu -->
+<div x-show="open" class="md:hidden space-y-3">
+  {% for item in site.data.navigation.header %}
+    <a 
+      href="{{ item.url }}" 
+      class="block py-2 hover:underline {% if item.highlight %}text-blue-400{% endif %}"
+    >
+      {{ item.name }}
+    </a>
+  {% endfor %}
+</div>

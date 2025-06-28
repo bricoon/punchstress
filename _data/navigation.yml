@@ -1,0 +1,19 @@
+# _data/navigation.yml
+header:
+  - name: "Blog"
+    url: "/blog"
+    icon: "📝"  # Optional emoji/icon
+  - name: "Subscribe"
+    url: "/subscribe"
+    icon: "✉️"
+  - name: "About"
+    url: "/about"
+  - name: "Contact"
+    url: "/contact"
+    highlight: true  # Optional flag for styled buttons
+
+footer:
+  - name: "Privacy Policy"
+    url: "/privacy"
+  - name: "Terms"
+    url: "/terms"

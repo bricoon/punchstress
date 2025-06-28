@@ -1,0 +1,9 @@
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Optional for minification
+minify:
+  remove_comments: true
+  compress_js: true
