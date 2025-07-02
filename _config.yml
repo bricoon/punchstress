@@ -1,9 +1,69 @@
-plugins:
-  - jekyll-sitemap
-  - jekyll-feed
-  - jekyll-seo-tag
+# Site settings
+url: "https://punchstress.com" # The base hostname & protocol for your site
+baseurl: "" # The subpath of your site, e.g. /blog (keep empty for root)
+title: "PunchStress" # The name of your site
+description: "Punch stress with us, we are all doing it online." # Site description
 
-# Optional for minification
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM        # GitHub Flavored Markdown
+  hard_wrap: false  # Don't add <br /> for newlines
+  syntax_highlighter: rouge # Rouge is the default and good for code highlighting
+  entity_output: as_char # Crucial: Should render HTML entities as characters (as discussed previously)
+
+# Plugins
+# These plugins are generally for content generation, SEO, or build enhancements,
+# and typically do NOT fetch arbitrary external data for your *site's content*.
+plugins:
+  - jekyll-sitemap        # Generates a sitemap.xml
+  - jekyll-feed           # Generates an Atom feed
+  - jekyll-seo-tag        # Adds SEO meta tags
+  - jekyll-avatar         # For GitHub avatar integration (might use Faraday internally for API calls, but not for your site's content)
+  - jekyll-gist           # Embed GitHub gists (fetches gist content, but from GitHub, usually not a problem)
+  - jekyll-redirect-from  # Handles URL redirects (doesn't fetch external data)
+  - jekyll-include-cache  # Improves build speed for includes (doesn't fetch external data)
+
+# Performance Optimizations (Jekyll-minifier settings)
+# These settings are for the jekyll-minifier plugin (assuming you have it installed)
+# If you don't have jekyll-minifier, these will have no effect.
+# Note: It's good to explicitly add `jekyll-minifier` to your Gemfile and plugins if you rely on this.
+# For now, let's assume it's implicitly there or you'll add it.
 minify:
   remove_comments: true
   compress_js: true
+  compress_css: true
+  collapse_whitespace: true
+
+# Jekyll SEO Tag settings
+jekyll-seo-tag:
+  image: "/assets/images/social-share.jpg" # Default social share image
+  twitter_username: your_twitter_handle # Keep this for Twitter Cards
+  facebook_app_id: "1234567890" # Keep this if you have a Facebook App ID
+  # tiktok_username: PunchStress # <--- REMOVE THIS LINE, it's not a valid option for jekyll-seo-tag
+
+# Jekyll Sitemap settings
+sitemap:
+  exclude:
+    - "/404.html"
+    - "/assets/*" # Exclude all files in assets from the sitemap
+  change_frequency: weekly
+  priority: 0.7
+
+# Build optimization
+# These directories and files will be ignored by Jekyll during the build process.
+exclude:
+  - "node_modules"
+  - "vendor"
+  - "*.gem"
+  - "Gemfile*" # Includes Gemfile and Gemfile.lock
+  - "package*.json" # Includes package.json and package-lock.json
+  - "rollup.config.js"
+  - "tailwind.config.js"
+  # If you create the .well-known folder for development, it will be excluded by default
+  # unless you explicitly add it to 'include:'. Given your plan to delete it, no change needed here.
+
+# Development settings
+# These are useful for faster development cycles.
+future: true       # Show future-dated posts (useful for scheduling)
+incremental: true  # Faster builds in development by only processing changed files

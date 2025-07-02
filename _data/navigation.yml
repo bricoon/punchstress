@@ -1,8 +1,14 @@
 # _data/navigation.yml
 header:
+  - name: "Home"
+    url: "/"
+    icon: "🏠" # Added a Home link with an icon, common for headers
+  - name: "Products" # Assuming you have a products page or section now
+    url: "/products/"
+    icon: "📦" # Optional: An icon for products
   - name: "Blog"
     url: "/blog"
-    icon: "📝"  # Optional emoji/icon
+    icon: "📝" # Optional emoji/icon
   - name: "Subscribe"
     url: "/subscribe"
     icon: "✉️"
@@ -10,10 +16,13 @@ header:
     url: "/about"
   - name: "Contact"
     url: "/contact"
-    highlight: true  # Optional flag for styled buttons
+    highlight: true # Optional flag for styled buttons
 
 footer:
   - name: "Privacy Policy"
     url: "/privacy"
   - name: "Terms"
     url: "/terms"
+  # You can add more footer links here if needed
+  # - name: "Sitemap"
+  #   url: "/sitemap.xml"

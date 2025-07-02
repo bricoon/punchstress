@@ -1,0 +1,20 @@
+<section class="py-20 bg-gradient-to-b from-white to-gray-50 text-gray-900">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-4xl font-bold text-center mb-4">{{ include.title }}</h2>
+    <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">{{ include.description }}</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+       {% comment %} {# Added lg:grid-cols-3 for better layout #} {% endcomment %}
+      {% for product in site.data.products %}
+        {% include product-card.html
+            images=product.images
+            title=product.title
+            price=product.price
+            description=product.description
+            url=product.url
+            badge=product.badge
+        %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

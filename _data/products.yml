@@ -1,0 +1,18 @@
+- title: "One Ball Kit"
+  price: "$24.99"
+  description: "Ideal for beginners or focused solo training. Comes with premium headband and reflex ball."
+  url: "https://buy.stripe.com/test_123"
+  images:
+    - "/assets/images/reflex-b1.avif"
+    - "/assets/images/reflex-b2.avif"
+      
+  badge: "All you need"
+
+- title: "Two Ball Kit"
+  price: "$39.99"
+  description: "Advanced kit for improved coordination. Includes two premium balls, adjustable headband, and stylish carrying pouch."
+  url: "https://buy.stripe.com/test_456"
+  images:
+    - "/assets/images/reflex-b1.avif"
+    - "/assets/images/reflex-b2.avif"
+  badge: "BEST VALUE"

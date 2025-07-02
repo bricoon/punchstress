@@ -1,40 +1,81 @@
-<nav class="bg-black text-white px-4 py-3" x-data="{ open: false }" x-cloak>
+<nav class="bg-black text-white px-4 py-3 relative z-50 border-b border-indigo-900/50">
   <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <!-- Logo -->
-    <div class="text-xl font-bold">PunchStress</div>
+    <a href="{{ '/' | relative_url }}" class="text-xl font-bold hover:opacity-80 transition-opacity flex items-center" aria-label="PunchStress Home">
+      <span class="text-2xl mr-2">🥊</span>
+      <span class="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+        PunchStress
+      </span>
+    </a>
 
-    <!-- Desktop Menu Items -->
-    <div class="hidden md:flex space-x-6">
-      <a href="/blog" class="hover:underline">Blog</a>
-      <a href="/subscribe" class="hover:underline">Sub With Us</a>
-      <a href="/about" class="hover:underline">About</a>
-      <a href="/contact" class="hover:underline">Contact</a>
+    <div class="hidden md:flex space-x-6 items-center">
+      {% for item in site.data.navigation.header %}
+        <a
+          href="{{ item.url | relative_url }}"
+          class="text-gray-300 hover:text-amber-300 transition-colors duration-200
+                 {% if item.highlight %}bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-2 rounded-full text-indigo-900 font-semibold hover:shadow-lg hover:shadow-amber-500/20{% endif %}"
+        >
+          {% if item.icon %}<span class="mr-1">{{ item.icon }}</span>{% endif %}
+          {{ item.name }}
+        </a>
+      {% endfor %}
     </div>
 
-    <!-- Hamburger Icon (mobile only) -->
-    <button class="md:hidden focus:outline-none" @click="open = !open" aria-label="Toggle menu">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <button class="md:hidden focus:outline-none p-2 text-gray-300 hover:text-amber-300" @click="open = !open" aria-label="Toggle menu">
+     <!-- {# Removed $dispatch, directly toggle the global 'open' #} -->
+      <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
   </div>
 
-  <!-- Mobile menu -->
-  <div x-show="open"
-       x-transition:enter="transition ease-out duration-100"
-       x-transition:enter-start="opacity-0"
-       x-transition:enter-end="opacity-100"
-       x-transition:leave="transition ease-in duration-75"
-       x-transition:leave-start="opacity-100"
-       x-transition:leave-end="opacity-0"
-       class="md:hidden mt-3 space-y-3 px-2 pb-2 bg-black">
-    <a href="/blog" class="block py-2 hover:underline">Blog</a>
-    <a href="/subscribe" class="block py-2 hover:underline">Sub With Us</a>
-    <a href="/about" class="block py-2 hover:underline">About</a>
-    <a href="/contact" class="block py-2 hover:underline">Contact</a>
+  <!-- {# Mobile Menu Panel and Overlay - REMOVED x-data="{ open: false }" HERE #}
+  {# It now implicitly inherits the 'open' from the <body>'s x-data #} -->
+  <div class="md:hidden">
+    <div x-show="open"
+         x-transition:enter="transition-opacity ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="open = false" {# Clicks on overlay close the menu #}
+         class="fixed inset-0 bg-black bg-opacity-80 z-40">
+    </div>
+
+    <div x-show="open"
+         @click.away="open = false" {# Clicks outside the menu panel close the menu #}
+         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full"
+         class="fixed inset-y-0 right-0 w-64 bg-gray-900 text-white shadow-lg p-6 z-50 transform"
+    >
+      <div class="flex justify-end mb-6">
+        <button @click="open = false" class="text-gray-300 hover:text-amber-300 focus:outline-none p-2" aria-label="Close menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        {% for item in site.data.navigation.header %}
+          <a
+            href="{{ item.url | relative_url }}"
+            class="block py-3 px-4 text-lg text-gray-200 hover:text-amber-300 hover:bg-gray-800 rounded-lg transition-colors duration-200
+                   {% if item.highlight %}bg-gradient-to-r from-amber-400 to-amber-600 text-indigo-900 font-bold{% endif %}"
+            @click="open = false" {# Close menu when clicking a link #}
+          >
+            {% if item.icon %}<span class="mr-2">{{ item.icon }}</span>{% endif %}
+            {{ item.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </nav>
-
-<style>
-  [x-cloak] { display: none !important; }
-</style>

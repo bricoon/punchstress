@@ -3392,7 +3392,41 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   var module_default = src_default;
 
   // assets/js/main.js
-  window.Alpine = module_default;
+  document.addEventListener('alpine:init', function () {
+    window.Alpine = module_default; // Ensure Alpine is globally available
+
+    module_default.data('productCarousel', function () {
+      return {
+        images: [],
+        // Initialize empty
+        current: 0,
+        init: function init() {
+          // 'this.$el' refers to the element with x-data
+          // Read the JSON string from data-images
+          var imagesJsonString = this.$el.dataset.images;
+          if (imagesJsonString) {
+            try {
+              this.images = JSON.parse(imagesJsonString);
+            } catch (e) {
+              console.error("Error parsing images JSON:", e, imagesJsonString);
+              this.images = []; // Fallback to empty array on error
+            }
+          }
+          // Optional: Auto-advance (if needed)
+          // setInterval(() => {
+          //   this.next();
+          // }, 3000);
+        },
+        next: function next() {
+          this.current = (this.current + 1) % this.images.length;
+        },
+        prev: function prev() {
+          this.current = (this.current - 1 + this.images.length) % this.images.length;
+        }
+      };
+    });
+  });
   module_default.start();
 
 })();
+//# sourceMappingURL=bundle.js.map

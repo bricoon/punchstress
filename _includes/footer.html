@@ -1,0 +1,18 @@
+<footer class="bg-gray-900 text-gray-400 py-8">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}. All rights reserved.</p>
+    <div class="mt-4 flex justify-center space-x-4">
+      <a href="https://www.tiktok.com/@ni9ash" target="_blank" rel="noopener" aria-label="Follow us on TikTok"
+         class="text-gray-400 hover:text-white transition-colors duration-200 w-6 h-6">
+        {% include icon-tiktok.html %}
+      </a>
+      {% comment %} {# If you add Instagram: #} {% endcomment %}
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Follow us on Instagram"
+         class="text-gray-400 hover:text-white transition-colors duration-200 w-6 h-6">
+        {% include icon-instagram.html %} 
+        {% comment %} {# Create _includes/icon-instagram.html with its SVG #} {% endcomment %}
+      </a>
+      {% comment %} {# Add more as needed #} {% endcomment %}
+    </div>
+  </div>
+</footer>

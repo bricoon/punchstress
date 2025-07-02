@@ -1,0 +1,50 @@
+<div class="group border rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white relative overflow-hidden"
+     x-data="productCarousel()"
+     data-images='{% assign images_json = include.images | jsonify %}{{ images_json | escape_once }}'>
+    {% comment %} {# Store the JSON as a string in a data attribute #}
+    {# Use escape_once to ensure it's safe for HTML, but not double-escaped #} {% endcomment %}
+
+    {% if include.badge %}
+    <div class="absolute -top-4 -right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold transform rotate-12 z-10">
+      {{ include.badge }}
+    </div>
+    {% endif %}
+
+    <div class="relative aspect-video mb-6 rounded-lg">
+      <template x-for="(image, index) in images" :key="index">
+        <img :src="image"
+             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+             :class="{ 'opacity-100': current === index, 'opacity-0': current !== index }"
+             :alt="'{{ include.title }} - Image ' + (index+1)">
+      </template>
+
+      <button @click="prev()"
+              class="absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          <span class="text-2xl">‹</span>
+      </button>
+      <button @click="next()"
+              class="absolute top-1/2 right-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          <span class="text-2xl">›</span>
+      </button>
+
+      <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+        <template x-for="(image, index) in images" :key="index">
+          <button @click="current = index"
+                  :class="{ 'bg-white': current === index, 'bg-white/50': current !== index }"
+                  class="w-2 h-2 rounded-full transition-all"
+                  :aria-label="'Go to slide ' + (index+1)"></button>
+        </template>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <h3 class="text-2xl font-bold mb-2">{{ include.title }}</h3>
+      <div class="text-3xl font-bold text-green-600 mb-4">{{ include.price }}</div>
+      <p class="text-gray-600 mb-6">{{ include.description }}</p>
+      <a href="{{ include.url | default: '#' }}"
+         target="_blank"
+         class="inline-block w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transform hover:-translate-y-0.5 transition-all duration-200">
+        {{ include.button_text | default: 'Add to Cart' }}
+      </a>
+    </div>
+</div>
