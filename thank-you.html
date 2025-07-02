@@ -1,0 +1,220 @@
+---
+permalink: /thank-you/
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Your Subscription!</title>
+    <!-- Add this meta tag to prevent indexing -->
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Link to your locally built main.css instead of the CDN -->
+    <!-- Assuming main.css is generated in your assets/css directory by your build process -->
+    <link href="/assets/css/main.css" rel="stylesheet"> 
+
+    <style>
+        /* Custom styles for Inter font - this is still needed as Tailwind doesn't load font files */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Basic styling for the message box */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message-box.loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Message Box -->
+    <div id="messageBox" class="message-box"></div>
+
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Thank You! 🎉</h1>
+        <p class="text-lg text-gray-600 mb-6">Your subscription payment was successful.</p>
+
+        <div class="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200 text-left">
+            <h2 class="text-xl font-semibold text-blue-800 mb-2">Your Details:</h2>
+            <p class="text-gray-700"><strong>Email:</strong> <span id="userEmail">xxxx@example.com-placeholder</span></p>
+            <p class="text-gray-700"><strong>Phone:</strong> <span id="userPhone">xxxx-phone-number-placeholder</span></p>
+            <p class="text-sm text-blue-600 mt-2">
+                (These details are simulated from URL parameters for demonstration. In a real Stripe integration, you'd fetch them securely.)
+            </p>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Join Our Private Discord!</h2>
+        <p class="text-gray-600 mb-6">Enter your Discord User ID below to get access to our exclusive subscriber-only room.</p>
+
+        <form id="discordForm" class="space-y-4">
+            <div>
+                <label for="discordId" class="block text-left text-gray-700 font-medium mb-2">Discord User ID:</label>
+                <input type="text" id="discordId" name="discordId" placeholder="e.g., 123456789012345678"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-800"
+                       required>
+                <p class="text-sm text-gray-500 mt-1 text-left">
+                    **Important:** This is your unique Discord User ID, **not your username or display name.**<br>
+                    To find it:
+                    <ol class="list-decimal list-inside ml-4 mt-2">
+                        <li>Open Discord.</li>
+                        <li>Go to **User Settings** (the gear icon near your username).</li>
+                        <li>Navigate to **App Settings > Advanced**.</li>
+                        <li>Toggle **Developer Mode** to ON.</li>
+                        <li>Close User Settings.</li>
+                        <li>Right-click on your own username (or any user's username) in Discord.</li>
+                        <li>Select **"Copy ID"**. This will copy the long string of numbers you need.</li>
+                    </ol>
+                </p>
+            </div>
+            <button type="submit" id="submitButton"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <span id="buttonText">Grant Discord Access</span>
+                <span id="loadingSpinner" class="hidden ml-2 inline-block w-4 h-4 border-2 border-white border-solid rounded-full animate-spin border-r-transparent"></span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Function to display messages (success, error, loading)
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`; // Apply type class for styling
+            messageBox.style.display = 'block';
+
+            // Hide message after 5 seconds for success/error, but not for loading
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            const params = {};
+            window.location.search.substring(1).split('&').forEach(param => {
+                const parts = param.split('=');
+                if (parts.length === 2) {
+                    params[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+                }
+            });
+            return params;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userEmailSpan = document.getElementById('userEmail');
+            const userPhoneSpan = document.getElementById('userPhone');
+            const discordForm = document.getElementById('discordForm');
+            const discordIdInput = document.getElementById('discordId');
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Simulate extracting email and phone from Stripe (via URL parameters)
+            // In a real Stripe integration, after a successful checkout redirect,
+            // you might get a session_id in the URL. You would then use Stripe.js
+            // on the client-side to fetch the session details, which contain
+            // customer email and other info.
+            // Example: const params = new URLSearchParams(window.location.search);
+            // const sessionId = params.get('session_id');
+            // if (sessionId) { fetchStripeSession(sessionId); }
+            // For this demo, we'll use mock data or direct URL params.
+
+            const queryParams = getQueryParams();
+            // Updated placeholders
+            const email = queryParams.email || 'xxxx@example.com-placeholder'; 
+            const phone = queryParams.phone || 'xxxx-phone-number-placeholder'; 
+
+            userEmailSpan.textContent = email;
+            userPhoneSpan.textContent = phone;
+
+            // Handle form submission
+            discordForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                const discordId = discordIdInput.value.trim();
+                if (!discordId) {
+                    showMessage('Please enter your Discord User ID.', 'error');
+                    return;
+                }
+
+                // Disable button and show loading spinner
+                submitButton.disabled = true;
+                buttonText.textContent = 'Processing...';
+                loadingSpinner.classList.remove('hidden');
+                showMessage('Sending request...', 'loading');
+
+                // Prepare data for Lambda
+                const dataToSend = {
+                    email: email,
+                    phone: phone,
+                    discordId: discordId
+                };
+
+                // Replace with your actual AWS API Gateway Endpoint URL for the Lambda function
+                const lambdaEndpoint = 'YOUR_AWS_API_GATEWAY_LAMBDA_ENDPOINT_HERE'; 
+
+                try {
+                    const response = await fetch(lambdaEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // If you use API Keys for your API Gateway, add it here:
+                            // 'x-api-key': 'YOUR_API_GATEWAY_API_KEY_HERE' 
+                        },
+                        body: JSON.stringify(dataToSend)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showMessage('Discord access granted successfully! Check your Discord app.', 'success');
+                        // Optionally clear the form or redirect
+                        discordForm.reset();
+                    } else {
+                        // Handle errors from Lambda (e.g., Discord ID not found, bot error)
+                        const errorMessage = result.message || 'An unknown error occurred.';
+                        showMessage(`Failed to grant Discord access: ${errorMessage}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error sending data to Lambda:', error);
+                    showMessage('Network error or server unreachable. Please try again later.', 'error');
+                } finally {
+                    // Re-enable button and hide loading spinner
+                    submitButton.disabled = false;
+                    buttonText.textContent = 'Grant Discord Access';
+                    loadingSpinner.classList.add('hidden');
+                    // Hide loading message if still visible
+                    if (document.getElementById('messageBox').classList.contains('loading')) {
+                        document.getElementById('messageBox').style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
